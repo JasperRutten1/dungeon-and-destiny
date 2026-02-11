@@ -8,6 +8,12 @@ import { GiPistolGun } from "react-icons/gi";
 import { GiEnlightenment } from "react-icons/gi";
 import { GiUpgrade } from "react-icons/gi";
 
+const Stat = ({ icon, value }: { icon: React.ReactNode; value: number | undefined }) => (
+    <div className="flex items-center gap-2 justify-center">
+        {icon}
+        <p>{value ?? 0}</p>
+    </div>
+);
 
 export const CharacterClassOverview:React.FC = () => {
     const characterContext = useContext(CharacterContext);
@@ -46,57 +52,97 @@ export const CharacterClassOverview:React.FC = () => {
     }
 
     return (
-        <div className="flex flex-row gap-2 m-2">
-            <div className="flex flex-row gap-2 justify-between border-2 p-3 w-1/3">
-                <div className="flex flex-col gap-2 justify-center">
-                    <h3 className="text-2xl font-bold text-amber-700">{characterContext.value.name}</h3>
-                    <p className="text-xl font-bold text-amber-700">{characterContext.value.subClass} {characterContext.value.characterClass}</p>
+        <div className="flex flex-col lg:flex-row gap-4 m-2">
+
+            {/* CHARACTER INFO */}
+            <div className="
+                flex flex-row sm:flex-row
+                justify-between
+                border-2
+                p-4
+                rounded-lg
+                w-full lg:w-1/3
+                gap-3
+            ">
+                <div className="flex flex-col justify-center">
+                    <h3 className="text-xl sm:text-2xl font-bold text-amber-700">
+                        {characterContext.value.name}
+                    </h3>
+                    <p className="text-lg sm:text-xl font-bold text-amber-700">
+                        {characterContext.value.subClass} {characterContext.value.characterClass}
+                    </p>
                 </div>
-                <div className="flex flex-col gap-2 justify-center">
-                    <h3 className="text-2xl font-bold text-amber-700">{characterContext.value.ghost.name}</h3>
-                </div>
-            </div>
-            <div className="flex flex-col border-2 w-1/3 p-3">
-                <h3 className="font-bold text-white text-2xl flex justify-center w-full">Character stats:</h3>
-                <div className="flex flex-row gap-1 w-full justify-between p-3 text-amber-700 text-lg">
-                    <div className="flex felx-row gap-2 items-center justify-between">
-                        <GiHearts/>
-                        <p>{totalArmourStatsContext.value?.resilience}</p>
-                    </div>
-                    <div className="flex felx-row gap-2 items-center justify-between">
-                        <GiRunningNinja />
-                        <p>{totalArmourStatsContext.value?.agility}</p>
-                    </div>
-                    <div className="flex felx-row gap-2 items-center justify-between">
-                        <GiOpenBook />
-                        <p>{totalArmourStatsContext.value?.intelligence}</p>
-                    </div>
-                    <div className="flex felx-row gap-2 items-center justify-between">
-                        <GiPistolGun />
-                        <p>{totalArmourStatsContext.value?.weaponHandling}</p>
-                    </div>
-                    <div className="flex felx-row gap-2 items-center justify-between">
-                        <GiEnlightenment />
-                        <p>{totalArmourStatsContext.value?.abilityPower}</p>
-                    </div>
-                    <div className="flex felx-row gap-2 items-center justify-between">
-                        <GiUpgrade />
-                        <p>{totalArmourStatsContext.value?.lightLevel}</p>
-                    </div>
+
+                <div className="flex items-center">
+                    <h3 className="text-lg sm:text-xl font-bold text-amber-700">
+                        Ghost: {characterContext.value.ghost.name}
+                    </h3>
                 </div>
             </div>
-            <div className="flex flex-col border-2 gap-2 w-1/3 p-3">
-                <div className="justify-center items-center flex flex-row gap-3 font-bold text-white text-2xl">
+
+            {/* STATS */}
+            <div className="
+                border-2
+                rounded-lg
+                p-4
+                w-full lg:w-1/3
+            ">
+                <h3 className="font-bold text-white text-xl sm:text-2xl text-center mb-4">
+                    Character Stats
+                </h3>
+
+                <div className="
+                    grid grid-cols-3
+                    gap-4
+                    text-amber-700
+                    text-base sm:text-lg
+                ">
+                    <Stat icon={<GiHearts />} value={totalArmourStatsContext.value?.resilience} />
+                    <Stat icon={<GiRunningNinja />} value={totalArmourStatsContext.value?.agility} />
+                    <Stat icon={<GiOpenBook />} value={totalArmourStatsContext.value?.intelligence} />
+                    <Stat icon={<GiPistolGun />} value={totalArmourStatsContext.value?.weaponHandling} />
+                    <Stat icon={<GiEnlightenment />} value={totalArmourStatsContext.value?.abilityPower} />
+                    <Stat icon={<GiUpgrade />} value={totalArmourStatsContext.value?.lightLevel} />
+                </div>
+            </div>
+
+            {/* HEALTH */}
+            <div className="
+                border-2
+                rounded-lg
+                p-4
+                w-full lg:w-1/3
+                flex flex-col gap-4
+            ">
+                <div className="flex justify-center items-center gap-3 font-bold text-white text-xl sm:text-2xl">
                     <h3>Health:</h3>
                     <p>{characterContext.value.health} / {getMaxHealth()}</p>
                 </div>
-                <div className="flex flex-row justify-center gap-1">
-                    <button onClick={addHealth} className="w-1/5 font-bold text-2xl border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700">+</button>
-                    <button onClick={resetHealth} className="w-1/5 font-bold text-2xl border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700">Reset</button>
-                    <button onClick={removeHealth} className="w-1/5 font-bold text-2xl border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700">-</button>
+
+                <div className="flex flex-row sm:flex-row gap-3">
+                    <button
+                        onClick={addHealth}
+                        className="flex-1 py-3 font-bold text-xl border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700"
+                    >
+                        +
+                    </button>
+
+                    <button
+                        onClick={resetHealth}
+                        className="flex-1 py-3 font-bold text-lg border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700"
+                    >
+                        Reset
+                    </button>
+
+                    <button
+                        onClick={removeHealth}
+                        className="flex-1 py-3 font-bold text-xl border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700"
+                    >
+                        -
+                    </button>
                 </div>
             </div>
-            
+
         </div>
-    )
+    );
 }

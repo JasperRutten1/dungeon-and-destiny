@@ -9,26 +9,25 @@ import { EquippedArmourContext } from "../../contexts/contexts";
 import { CharacterClassOverview } from "./CharacterClassOverview";
 
 
-export const CharacterOverview:React.FC = () => {
+export const CharacterOverview: React.FC = () => {
     const characterContext = useContext(CharacterContext);
 
-    const [equippedArmour, setEquippedArmour] = useState<EquippedArmour|undefined>(undefined);
-    const [equippedWeapons, setEquippedWeapons] = useState<EquippedWeapons|undefined>(undefined);
-
-    const [totalArmourStats, setTotalArmourStats] = useState<ArmourStats|undefined>(undefined);
+    const [equippedArmour, setEquippedArmour] = useState<EquippedArmour | undefined>(undefined);
+    const [equippedWeapons, setEquippedWeapons] = useState<EquippedWeapons | undefined>(undefined);
+    const [totalArmourStats, setTotalArmourStats] = useState<ArmourStats | undefined>(undefined);
 
     const fetchEquippedArmour = async () => {
-        if(characterContext == null ||characterContext.value == null || characterContext.value.id == null) return;
+        if (!characterContext?.value?.id) return;
         setEquippedArmour(await guardianService.getEquippedArmour(characterContext.value.id));
     }
 
     const fetchEquippedWeapons = async () => {
-        if(characterContext == null ||characterContext.value == null || characterContext.value.id == null) return;
+        if (!characterContext?.value?.id) return;
         setEquippedWeapons(await guardianService.getEquippedWeapons(characterContext.value.id));
     }
 
     const fetchTotalArmourStats = async () => {
-        if(characterContext == null ||characterContext.value == null || characterContext.value.id == null) return;
+        if (!characterContext?.value?.id) return;
         setTotalArmourStats(await guardianService.getTotalArmourStats(characterContext.value.id));
     }
 
@@ -43,18 +42,32 @@ export const CharacterOverview:React.FC = () => {
     }, [characterContext.value]);
 
     return (
-        <div className="border-2 rounded-xl p-3">
-            <TotalArmourStatsContext.Provider value={{value: totalArmourStats, update: fetchTotalArmourStats}}>
-                <CharacterClassOverview/>
+        <div className="border-2 rounded-xl p-4 space-y-6 bg-indigo-950/40 backdrop-blur-md shadow-xl">
+            
+            <TotalArmourStatsContext.Provider value={{ value: totalArmourStats, update: fetchTotalArmourStats }}>
+                <CharacterClassOverview />
             </TotalArmourStatsContext.Provider>
-            <h2 className="flex justify-center text-amber-700 font-bold text-xl">-- Weapons --</h2>
-            <EquippedWeaponsContext.Provider value={{value: equippedWeapons, update: updateInventory}}>
-                <EquippedWeaponsComponent unEquipable={false}/>
-            </EquippedWeaponsContext.Provider>
-            <h2 className="flex justify-center text-amber-700 font-bold text-xl">-- Armour --</h2>
-            <EquippedArmourContext.Provider value={{value: equippedArmour, update: updateInventory}}>
-                <EquippedArmourComponent unEquipable={false}/>
-            </EquippedArmourContext.Provider>
+
+            <div>
+                <h2 className="text-center text-amber-700 font-bold text-lg sm:text-xl mb-2">
+                    -- Weapons --
+                </h2>
+
+                <EquippedWeaponsContext.Provider value={{ value: equippedWeapons, update: updateInventory }}>
+                    <EquippedWeaponsComponent unEquipable={false} />
+                </EquippedWeaponsContext.Provider>
+            </div>
+
+            <div>
+                <h2 className="text-center text-amber-700 font-bold text-lg sm:text-xl mb-2">
+                    -- Armour --
+                </h2>
+
+                <EquippedArmourContext.Provider value={{ value: equippedArmour, update: updateInventory }}>
+                    <EquippedArmourComponent unEquipable={false} />
+                </EquippedArmourContext.Provider>
+            </div>
+
         </div>
     )
 }

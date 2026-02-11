@@ -12,48 +12,54 @@ interface ArmourSimpleComponentProps {
     onClick?: () => void;
 }
 
+const Stat = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
+    <div className="flex items-center justify-center gap-1">
+        {icon}
+        <span>{value}</span>
+    </div>
+);
+
 export const ArmourSimpleComponent: React.FC<ArmourSimpleComponentProps> = ({ armour, onClick }) => {
     const rarityBg = rarityBgMap[armour.rarity];
 
     return (
-        <>
-        <div className={`flex flex-row border-2 h-full px-4 p-2 gap-4 hover:bg-white/5 ${onClick ? "cursor-pointer": ""}`} onClick={onClick}>
-            <div className="felx flex-col gap-0 w-full">
-                <div className="flex flex-row gap-3 w-full">
-                    {armour.image && <img className={`flex items-center justify-center border-2 rounded-sm ${rarityBg}`} src={`http://localhost:8080${armour.image}`} alt="armour" />}
-                    <div className="grid grid-cols-2 gap-y-1 gap-x-4 w-full">
-                        <div className="text-amber-700 flex felx-row items-center justify-between">
-                            <GiHearts/>
-                            <p>{armour.stats.resilience}</p>
-                        </div>
-                        <div className="text-amber-700 flex felx-row items-center justify-between">
-                            <GiRunningNinja />
-                            <p>{armour.stats.agility}</p>
-                        </div>
-                        <div className="text-amber-700 flex felx-row items-center justify-between">
-                            <GiOpenBook />
-                            <p>{armour.stats.intelligence}</p>
-                        </div>
-                        <div className="text-amber-700 flex felx-row items-center justify-between">
-                            <GiPistolGun />
-                            <p>{armour.stats.weaponHandling}</p>
-                        </div>
-                        <div className="text-amber-700 flex felx-row items-center justify-between">
-                            <GiEnlightenment />
-                            <p>{armour.stats.abilityPower}</p>
-                        </div>
-                        <div className="text-amber-700 flex felx-row items-center justify-between">
-                            <GiUpgrade />
-                            <p>{armour.stats.lightLevel}</p>
-                        </div>
+        <div
+            className={`
+                w-full h-full
+                flex flex-col
+                p-2
+                gap-2
+                hover:bg-white/5
+                rounded-lg
+                transition
+                ${onClick ? "cursor-pointer" : ""}
+            `}
+            onClick={onClick}
+        >
+            {armour.image && (
+                <div className="w-full">
+                    <div className={`aspect-square border-2 rounded-md overflow-hidden ${rarityBg}`}>
+                        <img
+                            src={`http://localhost:8080${armour.image}`}
+                            alt="armour"
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                 </div>
-                <p className="text-lg font-bold text-amber-700">{armour.name}</p>
+            )}
+
+            <div className="grid grid-cols-3 gap-1 text-amber-700 text-xs sm:text-sm">
+                <Stat icon={<GiHearts />} value={armour.stats.resilience} />
+                <Stat icon={<GiRunningNinja />} value={armour.stats.agility} />
+                <Stat icon={<GiOpenBook />} value={armour.stats.intelligence} />
+                <Stat icon={<GiPistolGun />} value={armour.stats.weaponHandling} />
+                <Stat icon={<GiEnlightenment />} value={armour.stats.abilityPower} />
+                <Stat icon={<GiUpgrade />} value={armour.stats.lightLevel} />
             </div>
-            
-            
+
+            <p className="text-sm sm:text-base font-bold text-amber-700 text-center">
+                {armour.name}
+            </p>
         </div>
-        
-        </>
-    )
-}
+    );
+};

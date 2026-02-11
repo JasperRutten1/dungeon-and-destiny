@@ -26,26 +26,29 @@ export const Body: React.FC = () => {
 
     return (
         <>
-        <div className="min-h-screen max-h-screen bg-gradient-to-r from-indigo-800 to-indigo-900 flex w-full">
+        <div className="min-h-screen bg-gradient-to-r from-indigo-800 to-indigo-900 w-full">
             <CharacterContext.Provider value={{ value: selectedCharacter, set: setSelectedCharacter }}> 
                 <GuardianContext.Provider value={{ value: guardians, update: fetchGuardians }}>
                     <BrowserRouter>
-                        <div className="grid grid-cols-5 grid-rows-7 gap-2 w-full p-2 ">
-                            <div className="col-span-6 w-full h-full">
+                        <div className="flex flex-col lg:grid lg:grid-cols-5 lg:grid-rows-7 gap-2 w-full p-2">
+                            <div className="w-full lg:col-span-5">
                                 <Header/>
                             </div>
-                            <div className="row-start-2 row-span-6 flex flex-col justify-start items-start gap-4 h-full border-primary border-2 rounded-lg p-4 shadow-lg">
-                                <nav className="text-white text-lg px-4 py-2 bg-gradient-to-r from-amber-700 to-orange-700 rounded-lg w-full flex">
-                                    <Link className="w-full h-full" to="/character">Character</Link>
+                            <div className="
+                                flex flex-row lg:flex-col
+                                gap-4
+                                lg:row-start-2 lg:row-span-6
+                                border-primary border-2 rounded-lg p-4 shadow-lg
+                                bg-indigo-950/40 backdrop-blur-md
+                            ">
+                                <nav className="text-white text-lg px-4 py-2 bg-gradient-to-r from-amber-700 to-orange-700 rounded-lg w-full flex justify-center">
+                                    <Link className="w-full text-center" to="/character">Character</Link>
                                 </nav>
-                                <nav className="text-white text-lg px-4 py-2 bg-gradient-to-r from-amber-700 to-orange-700 rounded-lg w-full flex">
-                                    <Link className="w-full h-full" to="/inventory">Inventory</Link>
-                                </nav>
-                                <nav className="text-white text-lg px-4 py-2 bg-gradient-to-r from-amber-700 to-orange-700 rounded-lg w-full flex">
-                                    <Link to="/admin/" className="w-full h-full">Admin</Link>
+                                <nav className="text-white text-lg px-4 py-2 bg-gradient-to-r from-amber-700 to-orange-700 rounded-lg w-full flex justify-center">
+                                    <Link className="w-full text-center" to="/inventory">Inventory</Link>
                                 </nav>
                             </div>
-                            <div className="col-span-5 row-start-2 row-span-6">
+                            <div className="lg:col-span-4 lg:row-start-2 lg:row-span-6">
                                 <Routes>
                                     <Route path="/" element={<Characters/>}></Route>
                                     <Route path="/characters" element={<Characters/>}></Route>

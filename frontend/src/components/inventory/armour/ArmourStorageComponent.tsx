@@ -39,17 +39,17 @@ export const ArmourStorageComponent: React.FC = () => {
     return (
         <>
         {message && <p className="text-green-500">{message}</p>}
-        <div className="border-2 rounded-xl">
-            <h3 className="text-amber-700 font-bold p-2">Armour Storage</h3>
+        <div className="">
+            <h3 className="text-amber-700 font-bold p-2 flex justify-center">-- Armour Storage --</h3>
             {
                 armourStorageContext.value && armourStorageContext.value.length === 0 && <div>
                     <p className="text-amber-800">You do not have any items</p>
                 </div>
             }
             {
-                armourStorageContext.value && armourStorageContext.value.length > 0 && <div className="grid grid-cols-5 gap-3 p-3">
+                armourStorageContext.value && armourStorageContext.value.length > 0 && <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
                     {
-                        armourStorageContext.value.map(armour => <ArmourSimpleComponent key={armour.id} armour={armour} onClick={() => onClickItem(armour)}/>)
+                        armourStorageContext.value.map(armour => <div className="border-2 rounded-xl bg-gray-800/40"><ArmourSimpleComponent key={armour.id} armour={armour} onClick={() => onClickItem(armour)}/></div>)
                     }
                 </div>
             }
