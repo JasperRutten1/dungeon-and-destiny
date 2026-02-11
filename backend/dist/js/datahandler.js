@@ -20,3 +20,21 @@ export const saveData = async (data, name) => {
         console.error("Error writing file:", err);
     }
 };
+export const modifyData = async (name, opperation) => {
+    let data = await loadData(name);
+    await opperation(data);
+    await saveData(data, name);
+};
+export const modifyFilteredData = async (name, filter, opperation) => {
+    let modified;
+    await modifyData(name, async (data) => {
+        const index = data.findIndex(filter);
+        if (index === -1) {
+            throw new Error(`No ${name} entry matched the filter`);
+        }
+        await opperation(data[index]);
+        modified = data[index];
+    });
+    return modified;
+};
+export const modifyDataWithId = async (name, id, opperation) => modifyFilteredData(name, data => data.id === id, opperation);

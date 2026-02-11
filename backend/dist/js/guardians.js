@@ -1,26 +1,14 @@
-import { loadData, saveData } from "./datahandler.js";
+import { loadData, modifyData, modifyDataWithId, modifyFilteredData } from "./datahandler.js";
 import { getItemById, getWeaponById, getArmorById } from "./items.js";
+import { getEquippedArmour } from "./items.js";
+import { armourTypes } from "./items.js";
+const GUARDIAN_DEFAULT_HP = 40;
 export const getGuardians = async () => {
     return loadData("guardians", []);
 };
-export const modifyGuardians = async (opperation) => {
-    let guardians = await getGuardians();
-    await opperation(guardians);
-    await saveData(guardians, "guardians");
-};
-export const modifyGuardian = async (filter, opperation) => {
-    await modifyGuardians(async (guardians) => {
-        const index = guardians.findIndex(filter);
-        if (index === -1) {
-            throw new Error(`No Guardian found`);
-        }
-        opperation(guardians[index]);
-    });
-};
-export const modifyGuardianById = async (id, opperation) => {
-    console.log("looking for match with id: " + id);
-    await modifyGuardian(g => g.id === id, opperation);
-};
+export const modifyGuardians = async (opperation) => modifyData("guardians", opperation);
+export const modifyGuardian = async (filter, opperation) => modifyFilteredData("guardians", filter, opperation);
+export const modifyGuardianById = async (id, opperation) => modifyDataWithId("guardians", id, opperation);
 export const getGuardianById = async (id) => {
     const guardians = await getGuardians();
     return guardians.find((g) => g.id === id) || null;
@@ -77,9 +65,8 @@ export const giveItem = async (guardianId, itemId) => {
     });
 };
 export const giveWeapon = async (guardianId, weaponId) => {
-    if (await hasWeapon(guardianId, weaponId)) {
-        throw new Error(`Guardian with ID ${guardianId} already has weapon with ID ${weaponId}`);
-    }
+    if (await hasWeapon(guardianId, weaponId))
+        return;
     const weapon = await getWeaponById(weaponId);
     if (!weapon) {
         throw new Error(`Item with ID ${weaponId} not found`);
@@ -91,9 +78,8 @@ export const giveWeapon = async (guardianId, weaponId) => {
     });
 };
 export const giveArmour = async (guardianId, armourId) => {
-    if (await hasArmour(guardianId, armourId)) {
-        throw new Error(`Guardian with ID ${armourId} already has weapon with ID ${armourId}`);
-    }
+    if (await hasArmour(guardianId, armourId))
+        return;
     const armour = await getArmorById(armourId);
     if (!armour) {
         throw new Error(`Armour with ID ${armourId} not found`);
@@ -102,5 +88,41 @@ export const giveArmour = async (guardianId, armourId) => {
         if (!armour.id)
             return;
         guardian.inventory.armourStorage.push(armour.id);
+    });
+};
+export const getGuardianTotalArmourStats = async (guardianId) => {
+    const armours = await Promise.all(armourTypes.map(type => getEquippedArmour(guardianId, type)));
+    const base = {
+        resilience: 0,
+        agility: 0,
+        intelligence: 0,
+        weaponHandling: 0,
+        abilityPower: 0,
+        lightLevel: 0
+    };
+    for (const armour of armours) {
+        if (!armour)
+            continue;
+        for (const key in base) {
+            const statKey = key;
+            base[statKey] += armour.stats[statKey];
+        }
+    }
+    return base;
+};
+export const addHealth = async (guardianId, health) => {
+    return await modifyGuardianById(guardianId, async (guardian) => {
+        const stas = await getGuardianTotalArmourStats(guardian.id);
+        guardian.health = Math.min(guardian.health + health, stas.resilience + GUARDIAN_DEFAULT_HP);
+    });
+};
+export const removeHealth = async (guardianId, health) => {
+    return await modifyGuardianById(guardianId, async (guardian) => {
+        guardian.health = Math.max(guardian.health - health, 0);
+    });
+};
+export const resetHealth = async (guardianId) => {
+    return await modifyGuardianById(guardianId, async (guardian) => {
+        guardian.health = (await getGuardianTotalArmourStats(guardian.id)).resilience + GUARDIAN_DEFAULT_HP;
     });
 };

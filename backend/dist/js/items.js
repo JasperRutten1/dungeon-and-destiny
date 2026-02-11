@@ -1,5 +1,5 @@
-import { loadData, saveData } from "./datahandler.js";
-import { getGuardianById, hasArmour, modifyGuardianById } from "./guardians.js";
+import { loadData, modifyData, modifyDataWithId, modifyFilteredData, saveData } from "./datahandler.js";
+import { getGuardianById, hasArmour, hasWeapon, modifyGuardianById } from "./guardians.js";
 export const weaponSlotKey = {
     Primary: 'primaryWeapon',
     Secondary: 'secondaryWeapon',
@@ -12,11 +12,24 @@ export const armourSlotKey = {
     Legs: 'equippedLegs',
     ClassItem: 'equippedClassItem',
 };
+export const armourTypes = [
+    "Helmet",
+    "Gauntlets",
+    "Chest",
+    "Legs",
+    "ClassItem"
+];
 /*
 --------------------------------------------------
 Helper methods
 --------------------------------------------------
 */
+export const modifyWeapons = async (opperation) => modifyData("weapons", opperation);
+export const modifyWeapon = async (filter, opperation) => modifyFilteredData("weapons", filter, opperation);
+export const modifyWeaponWithId = async (id, opperation) => modifyDataWithId("weapons", id, opperation);
+export const modifyArmours = async (opperation) => modifyData("armor", opperation);
+export const modifyArmour = async (filter, opperation) => modifyFilteredData("armor", filter, opperation);
+export const modifyArmourWithId = async (id, opperation) => modifyDataWithId("armor", id, opperation);
 const getNextId = (arr) => {
     const maxId = arr.reduce((max, el) => {
         const id = Number(el && el.id);
@@ -68,10 +81,18 @@ export const getWeapons = async () => {
     return loadData("weapons", []);
 };
 export const addWeapon = async (weapon) => {
-    const weapons = await getWeapons();
-    weapon.id = getNextId(weapons);
-    weapons.push(weapon);
-    await saveData(weapons, "weapons");
+    await modifyWeapons(weapons => {
+        weapon.id = getNextId(weapons);
+        weapons.push(weapon);
+    });
+    return weapon;
+};
+export const editWeapon = async (weapon) => {
+    if (weapon.id == null)
+        throw new Error("No id found in weapon object!");
+    return await modifyWeaponWithId(weapon.id, w => {
+        Object.assign(w, weapon);
+    });
 };
 export const getWeaponById = async (id) => {
     const weapons = await getWeapons();
@@ -88,6 +109,47 @@ export const getGuardianWeaponStorage = async (guardianId) => {
     else
         return await getWeaponsById(weaponStorage);
 };
+export const getEquippedWeapon = async (guardianId, weaponType) => {
+    const guardian = await getGuardianById(guardianId);
+    if (!guardian)
+        throw new Error("Could not find guardian with id " + guardianId);
+    const equippedWeaponId = guardian.inventory[weaponSlotKey[weaponType]];
+    if (equippedWeaponId == null)
+        return null;
+    return await getWeaponById(equippedWeaponId);
+};
+export const equipWeapon = async (guardianId, weaponId) => {
+    const weapon = await getWeaponById(weaponId);
+    if (!weapon)
+        throw new Error("Something went wrong in equipping weapon: weapon not found");
+    if (!(await hasWeapon(guardianId, weaponId)))
+        throw new Error("Character does not have weapon");
+    const equippedWeapon = await getEquippedWeapon(guardianId, weapon.weaponType);
+    await modifyGuardianById(guardianId, async (guardian) => {
+        // remove weapon from storage
+        const index = guardian.inventory.weaponStorage.findIndex(id => id === weaponId);
+        if (index === -1)
+            throw new Error("Something went wrong in equipping weapon: weapon not in storage");
+        guardian.inventory.weaponStorage.splice(index, 1);
+        // equip new weapon
+        guardian.inventory[weaponSlotKey[weapon.weaponType]] = weaponId;
+        // store previously equipped weapon
+        if (equippedWeapon)
+            guardian.inventory.weaponStorage.push(equippedWeapon.id);
+    });
+    return weapon;
+};
+export const unEquipWeapon = async (guardianId, weaponType) => {
+    const weapon = await getEquippedWeapon(guardianId, weaponType);
+    if (!weapon)
+        return null;
+    await modifyGuardianById(guardianId, async (guardian) => {
+        guardian.inventory[weaponSlotKey[weapon.weaponType]] = undefined;
+        guardian.inventory.weaponStorage.push(weapon.id);
+    });
+    return weapon;
+};
+export const linkImageToWeapon = async (weaponId, path) => modifyWeaponWithId(weaponId, weapon => { weapon.image = path; });
 /*
 --------------------------------------------------
 Armour
@@ -96,11 +158,19 @@ Armour
 export const getArmor = async () => {
     return loadData("armor", []);
 };
-export const addArmor = async (armor) => {
-    const armors = await getArmor();
-    armor.id = getNextId(armors);
-    armors.push(armor);
-    await saveData(armors, "armor");
+export const addArmor = async (armour) => {
+    await modifyArmours(armours => {
+        armour.id = getNextId(armours);
+        armours.push(armour);
+    });
+    return armour;
+};
+export const editArmour = async (armour) => {
+    if (armour.id == null)
+        throw new Error("Missing id field of armour object!");
+    return await modifyArmourWithId(armour.id, a => {
+        Object.assign(a, armour);
+    });
 };
 export const getArmorById = async (id) => {
     const armors = await getArmor();
@@ -122,7 +192,7 @@ export const getEquippedArmour = async (guardianId, armourType) => {
     if (!guardian)
         throw new Error("Could not find guardian with id " + guardianId);
     const equippedArmourId = guardian.inventory[armourSlotKey[armourType]];
-    if (equippedArmourId == null || equippedArmourId == undefined)
+    if (equippedArmourId == null)
         return null;
     return await getArmorById(equippedArmourId);
 };
@@ -157,3 +227,4 @@ export const unEquipArmour = async (guardianId, armourType) => {
     });
     return armour;
 };
+export const linkImageToArmour = (weaponId, path) => modifyArmourWithId(weaponId, armour => { armour.image = path; });
