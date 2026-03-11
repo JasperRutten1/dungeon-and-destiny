@@ -1,0 +1,11 @@
+# ngrok configuration for local frontend and backend tunnels
+# Add your authtoken with `ngrok config add-authtoken <TOKEN>` if needed
+tunnels:
+  frontend:
+    proto: http
+    addr: 5173
+    host_header: rewrite
+  backend:
+    proto: http
+    addr: 8080
+    host_header: rewrite

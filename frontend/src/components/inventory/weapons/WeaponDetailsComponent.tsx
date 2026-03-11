@@ -5,6 +5,8 @@ interface WeaponDetailsComponentProps {
     weapon: Weapon;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const StatRow = ({ label, value }: { label: string; value: number|string }) => (
     <>
         <p className="font-medium">{label}:</p>
@@ -29,7 +31,7 @@ export const WeaponDetailsComponent: React.FC<WeaponDetailsComponentProps> = ({ 
                         <div className="w-full sm:w-40 flex-shrink-0">
                             <div className={`aspect-square border-2 rounded-md overflow-hidden ${rarityBg}`}>
                                 <img
-                                    src={`http://localhost:8080${weapon.image}`}
+                                    src={`${API_URL}${weapon.image}`}
                                     alt="gun"
                                     className="w-full h-full object-cover"
                                 />

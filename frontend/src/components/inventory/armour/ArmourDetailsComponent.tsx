@@ -5,6 +5,8 @@ interface ArmourDetailsComponentProps {
     armour: Armour;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const StatRow = ({ label, value }: { label: string; value: number }) => (
     <>
         <p className="font-medium">{label}:</p>
@@ -27,7 +29,7 @@ export const ArmourDetailsComponent: React.FC<ArmourDetailsComponentProps> = ({ 
                         <div className="w-full sm:w-48">
                             <div className={`aspect-square border-2 rounded-md overflow-hidden ${rarityBg}`}>
                                 <img
-                                    src={`http://localhost:8080${armour.image}`}
+                                    src={`${API_URL}${armour.image}`}
                                     alt="armour"
                                     className="w-full h-full object-cover"
                                 />

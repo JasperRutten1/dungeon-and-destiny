@@ -6,6 +6,8 @@ interface WeaponSimpleComponentProps {
     onClick?: () => void;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 export const WeaponSimpleComponent: React.FC<WeaponSimpleComponentProps> = ({ weapon, onClick }) => {
     const rarityBg = rarityBgMap[weapon.rarity];
 
@@ -28,7 +30,7 @@ export const WeaponSimpleComponent: React.FC<WeaponSimpleComponentProps> = ({ we
                     <div className="sm:w-32 flex-shrink-0 p-2">
                         <div className={`aspect-square border-2 rounded-sm overflow-hidden ${rarityBg}`}>
                             <img
-                                src={`http://localhost:8080${weapon.image}`}
+                                src={`${API_URL}${weapon.image}`}
                                 alt="gun"
                                 className="w-full h-full object-cover"
                             />

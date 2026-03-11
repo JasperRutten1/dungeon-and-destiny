@@ -1,14 +1,16 @@
 import axios from "axios";
 import type { Armour, ArmourType, EquippedArmour, Guardian, WeaponType, EquippedWeapons, Weapon, ArmourStats } from "@dungeons/shared";
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const getGuardianData = async (): Promise<Array<Guardian>> => {
     console.log("Fetching guardian data...");
-    return (await axios.get("http://localhost:8080/guardians")).data;
+    return (await axios.get(`${API_URL}/guardians`)).data;
 }
 
 const addGuardian = async (guardian: Guardian): Promise<Guardian> => {
     try {
-        return (await axios.post("http://localhost:8080/guardians", guardian)).data;
+        return (await axios.post(`${API_URL}/guardians`, guardian)).data;
     } catch (err) {
         console.log(err);
         throw err;
@@ -17,7 +19,7 @@ const addGuardian = async (guardian: Guardian): Promise<Guardian> => {
 
 const giveWeapon = async (weaponId: number, guardianId: number):Promise<string> => {
     try {
-        const data = (await axios.post("http://localhost:8080/guardians/weapons/give", {
+        const data = (await axios.post(`${API_URL}/guardians/weapons/give`, {
             weaponId: weaponId,
             guardianId: guardianId
         })).data;
@@ -33,7 +35,7 @@ const giveWeapon = async (weaponId: number, guardianId: number):Promise<string> 
 const getEquippedWeapons = async (guardianId: number): Promise<EquippedWeapons> => {
   try {
     const data = (
-      await axios.get(`http://localhost:8080/guardians/weapons/equipped/${guardianId}`)
+      await axios.get(`${API_URL}/guardians/weapons/equipped/${guardianId}`)
     ).data;
     console.log("fetched equipped weapons:", data);
     return data;
@@ -47,7 +49,7 @@ const getEquippedWeapons = async (guardianId: number): Promise<EquippedWeapons> 
 const equipWeapon = async (weaponId: number, guardianId: number): Promise<Weapon> => {
   try {
     const data = (
-      await axios.post("http://localhost:8080/guardians/weapons/equip", {
+      await axios.post(`${API_URL}/guardians/weapons/equip`, {
         weaponId,
         guardianId,
       })
@@ -64,7 +66,7 @@ const equipWeapon = async (weaponId: number, guardianId: number): Promise<Weapon
 const unEquipWeapon = async (guardianId: number, weaponType: WeaponType): Promise<Weapon | null> => {
   try {
     const data = (
-      await axios.post("http://localhost:8080/guardians/weapons/unequip", {
+      await axios.post(`${API_URL}/guardians/weapons/unequip`, {
         guardianId,
         weaponType,
       })
@@ -79,7 +81,7 @@ const unEquipWeapon = async (guardianId: number, weaponType: WeaponType): Promis
 
 const giveArmour = async (armourId: number, guardianId: number):Promise<string> => {
     try {
-        const data = (await axios.post("http://localhost:8080/guardians/armour/give", {
+        const data = (await axios.post(`${API_URL}/guardians/armour/give`, {
             armourId: armourId,
             guardianId: guardianId
         })).data;
@@ -93,7 +95,7 @@ const giveArmour = async (armourId: number, guardianId: number):Promise<string> 
 
 const getEquippedArmour = async (guardianId: number): Promise<EquippedArmour> => {
     try {
-        const data = (await axios.get("http://localhost:8080/guardians/armour/equipped/" + guardianId)).data;
+        const data = (await axios.get(`${API_URL}/guardians/armour/equipped/${guardianId}`)).data;
         console.log(`fetched equipped armour: ${data}`);
         return data;
     } catch (err) {
@@ -104,7 +106,7 @@ const getEquippedArmour = async (guardianId: number): Promise<EquippedArmour> =>
 
 const equipArmour = async (armourId: number, guardianId: number):Promise<Armour> => {
     try {
-        const data = (await axios.post("http://localhost:8080/guardians/armour/equip", {
+        const data = (await axios.post(`${API_URL}/guardians/armour/equip`, {
             armourId: armourId,
             guardianId: guardianId
         })).data;
@@ -118,7 +120,7 @@ const equipArmour = async (armourId: number, guardianId: number):Promise<Armour>
 
 const unEquipArmour = async (guardianId: number, armourType: ArmourType):Promise<Armour|null> => {
     try {
-        const data = (await axios.post("http://localhost:8080/guardians/armour/unequip", {
+        const data = (await axios.post(`${API_URL}/guardians/armour/unequip`, {
             guardianId: guardianId,
             armourType: armourType
         })).data;
@@ -132,7 +134,7 @@ const unEquipArmour = async (guardianId: number, armourType: ArmourType):Promise
 
 const getTotalArmourStats = async (guardianId: number):Promise<ArmourStats> => {
     try {
-        return (await axios.get("http://localhost:8080/guardians/armour/stats/" + guardianId)).data;
+        return (await axios.get(`${API_URL}/guardians/armour/stats/${guardianId}`)).data;
     } catch (err) {
         console.log(err);
         throw err;
@@ -141,7 +143,7 @@ const getTotalArmourStats = async (guardianId: number):Promise<ArmourStats> => {
 
 const addHealth = async (guardianId: number, health: number):Promise<Guardian> => {
     try {
-        const data = (await axios.post("http://localhost:8080/guardians/health/add", {
+        const data = (await axios.post(`${API_URL}/guardians/health/add`, {
             guardianId: guardianId,
             health: health
         })).data;
@@ -155,7 +157,7 @@ const addHealth = async (guardianId: number, health: number):Promise<Guardian> =
 
 const removeHealth = async (guardianId: number, health: number):Promise<Guardian> => {
     try {
-        const data = (await axios.post("http://localhost:8080/guardians/health/remove", {
+        const data = (await axios.post(`${API_URL}/guardians/health/remove`, {
             guardianId: guardianId,
             health: health
         })).data;
@@ -169,7 +171,7 @@ const removeHealth = async (guardianId: number, health: number):Promise<Guardian
 
 const resetHealth = async (guardianId: number):Promise<Guardian> => {
     try {
-        const data = (await axios.post("http://localhost:8080/guardians/health/reset", {
+        const data = (await axios.post(`${API_URL}/guardians/health/reset`, {
             guardianId: guardianId
         })).data;
         console.log(data);

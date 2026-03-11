@@ -12,6 +12,8 @@ interface ArmourSimpleComponentProps {
     onClick?: () => void;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const Stat = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
     <div className="flex items-center justify-center gap-1">
         {icon}
@@ -40,7 +42,7 @@ export const ArmourSimpleComponent: React.FC<ArmourSimpleComponentProps> = ({ ar
                 <div className="w-full">
                     <div className={`aspect-square border-2 rounded-md overflow-hidden ${rarityBg}`}>
                         <img
-                            src={`http://localhost:8080${armour.image}`}
+                            src={`${API_URL}${armour.image}`}
                             alt="armour"
                             className="w-full h-full object-cover"
                         />
