@@ -280,7 +280,7 @@ app.post("/images/armour/:armourId", armourImages.single("file"), async (req: Re
 
 /*
 --------------------------------------------------
-images 
+Health & Overshield
 --------------------------------------------------
 */
 
@@ -295,6 +295,7 @@ app.post("/guardians/health/remove", async (req: Request, res: Response) => {
 app.post("/guardians/health/reset", async (req: Request, res: Response) => {
   resetHealth(req.body.guardianId).then(guardian => res.json(guardian)).catch(err => res.status(400).send(err));
 });
+
 
 
 

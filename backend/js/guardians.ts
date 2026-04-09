@@ -3,6 +3,7 @@ import type { Guardian, Item, Armour, ArmourStats, ArmourType } from "@dungeons/
 import { getItemById, getWeaponById, getArmorById } from "./items.js";
 import { getEquippedArmour } from "./items.js";
 import { armourTypes } from "./items.js";
+import { Stats } from "fs";
 
 const GUARDIAN_DEFAULT_HP = 40;
 
@@ -146,5 +147,23 @@ export const removeHealth = async (guardianId: number, health: number) => {
 export const resetHealth = async (guardianId: number) => {
   return await modifyGuardianById(guardianId, async guardian => {
     guardian.health = (await getGuardianTotalArmourStats(guardian.id!)).resilience + GUARDIAN_DEFAULT_HP
+  });
+}
+
+export const addOvershield = async (guardianId: number, overhield: number) => {
+  return await modifyGuardianById(guardianId, async guardian => {
+    guardian.overshield = Math.min(guardian.overshield + overhield, 0);
+  });
+}
+
+export const removeOverShield = async (guardianId: number, value: number) => {
+  return await modifyGuardianById(guardianId, async guardian => {
+    guardian.overshield = Math.max(guardian.overshield - value, 0);
+  });
+}
+
+export const resetOvershield = async (guardianId: number) => {
+  return await modifyGuardianById(guardianId, async guardian => {
+    guardian.overshield = 0;
   });
 }

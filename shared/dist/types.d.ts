@@ -9,6 +9,7 @@ export interface Guardian {
     characterClass: CharacterClass;
     subClass: ElementType;
     health: number;
+    overshield: number;
 }
 export interface Ghost {
     name: string;

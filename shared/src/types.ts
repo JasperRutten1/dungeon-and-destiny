@@ -9,7 +9,8 @@ export interface Guardian{
     inventory: SimpleInventory,
     characterClass: CharacterClass,
     subClass: ElementType,
-    health: number
+    health: number,
+    overshield: number
 }
 
 export interface Ghost{

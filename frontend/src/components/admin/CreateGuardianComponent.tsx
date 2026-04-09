@@ -23,7 +23,8 @@ export const CreateGuardianComponent: React.FC = () => {
             },
             characterClass: characterClass,
             subClass: subClass,
-            health: 40
+            health: 40,
+            overshield: 0
         }
         addGuardian(newGuardian);
     }
