@@ -30,7 +30,7 @@ const app = express();
 const corsOptions = {
   origin: [
     "http://localhost:5173", 
-    "https://f535-94-110-125-176.ngrok-free.app" // Add your ngrok frontend URL here
+    "https://ce9d-94-110-125-176.ngrok-free.app" // Add your ngrok frontend URL here
   ],
   credentials: true, // Recommended if you are using cookies/sessions
 };

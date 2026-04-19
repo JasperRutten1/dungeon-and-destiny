@@ -121,10 +121,10 @@ export const CharacterClassOverview:React.FC = () => {
 
                 <div className="flex flex-row sm:flex-row gap-3">
                     <button
-                        onClick={addHealth}
+                        onClick={removeHealth}
                         className="flex-1 py-3 font-bold text-xl border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700"
                     >
-                        +
+                        -
                     </button>
 
                     <button
@@ -135,10 +135,10 @@ export const CharacterClassOverview:React.FC = () => {
                     </button>
 
                     <button
-                        onClick={removeHealth}
+                        onClick={addHealth}
                         className="flex-1 py-3 font-bold text-xl border-2 rounded-lg bg-gradient-to-r from-amber-700 to-orange-700"
                     >
-                        -
+                        +
                     </button>
                 </div>
             </div>
