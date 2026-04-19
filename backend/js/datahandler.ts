@@ -49,3 +49,13 @@ export const modifyFilteredData = async <T>(name: string, filter: DataFilter<T>,
 }
 
 export const modifyDataWithId = async <T extends {id?: number}>(name: string, id:number, opperation: ModifyOpperation<T>): Promise<T> => modifyFilteredData(name, data => data.id === id, opperation);
+
+export const removeDataWithId = async <T extends {id?: number}>(name: string, id:number): Promise<void> => {
+  await modifyData<T>(name, async data => {
+    const index = data.findIndex(d => d.id === id);
+    if (index !== -1) {
+      data.splice(index, 1);
+    }
+  });
+};
+

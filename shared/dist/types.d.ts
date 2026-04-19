@@ -1,6 +1,13 @@
 export interface ImageLink {
     image?: string;
 }
+export interface ImageResource {
+    id?: number;
+    name: string;
+    url: string;
+    type: ImageResourceType;
+}
+export type ImageResourceType = 'item' | 'weapon' | 'armour' | 'ghost' | 'ship' | 'vehicle';
 export interface Guardian {
     id?: number;
     name: string;
@@ -52,7 +59,10 @@ export interface Item {
     description: string;
     rarity: ItemRarity;
 }
-export interface Weapon extends Item, ImageLink {
+export interface ItemWithImage extends Item, ImageLink {
+    ImageResourceId?: number;
+}
+export interface Weapon extends ItemWithImage {
     stats: WeaponStats;
     weaponType: WeaponType;
     weaponCategory: WeaponCategory;
@@ -65,7 +75,7 @@ export interface WeaponStats {
     damage: string;
     blastRadius?: number;
 }
-export interface Armour extends Item, ImageLink {
+export interface Armour extends ItemWithImage {
     stats: ArmourStats;
     classType: CharacterClass;
     armourType: ArmourType;

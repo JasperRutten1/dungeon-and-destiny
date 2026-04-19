@@ -5,6 +5,7 @@ import { addWeapon, getItems, addItem, addArmor, getWeapons, getArmor, getGuardi
 import { EquippedArmour, EquippedWeapons } from "@dungeons/shared";
 import multer from "multer";
 import path from "path";
+import { exposeImageResourceEndpoints, exposeStaticImageResources, exposeGetResourceUrlEndpoint, exposeGetAllImageResourcesEndpoint } from "./js/imageResources.js";
 
 const weaponImages = multer({
   storage: multer.diskStorage({
@@ -25,6 +26,8 @@ const armourImages = multer({
     }
   })
 });
+
+
 
 const app = express();
 const corsOptions = {
@@ -252,9 +255,17 @@ app.get("/guardians/armour/stats/:guardianId", async (req: Request, res: Respons
 
 /*
 --------------------------------------------------
-images 
+images and resources
 --------------------------------------------------
 */
+
+exposeImageResourceEndpoints(app);
+
+exposeStaticImageResources(app);
+
+exposeGetResourceUrlEndpoint(app);
+
+exposeGetAllImageResourcesEndpoint(app);
 
 app.post("/images/weapons/:weaponId", weaponImages.single("file"), async (req: Request, res: Response) => {
   console.log(req.file);

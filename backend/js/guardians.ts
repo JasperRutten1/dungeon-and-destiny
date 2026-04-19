@@ -7,9 +7,7 @@ import { Stats } from "fs";
 
 const GUARDIAN_DEFAULT_HP = 40;
 
-export const getGuardians = async (): Promise<Guardian[]> => {
-  return loadData<Guardian>("guardians", []);
-};
+export const getGuardians = async (): Promise<Guardian[]> => loadData<Guardian>("guardians", []);;
 
 export const modifyGuardians = async (opperation: ModifyOpperation<Guardian[]>) => modifyData<Guardian>("guardians", opperation);
 
